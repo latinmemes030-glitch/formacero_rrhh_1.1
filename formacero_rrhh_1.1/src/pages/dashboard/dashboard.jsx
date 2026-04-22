@@ -21,6 +21,8 @@ function Dashboard() {
   const user = JSON.parse(localStorage.getItem("user"));
   const firstName = user?.nombre?.trim()?.split(" ")[0] || "Usuario";
 
+  console.log("Usuario logueado:", user); // Depuración
+
   // 🔒 LOGOUT
   const handleLogout = () => {
     setShowLogoutConfirm(true);
@@ -163,11 +165,10 @@ function Dashboard() {
 
         {/* 👤 USER + LOGOUT */}
         <div className="user-profile">
-          <img src="https://i.pravatar.cc/40" alt="Usuario"/>
-
-          <span>
-            {firstName}
-          </span>
+          <Link to={`/empleado/${user?.empleado_id || user?.id}`} className="user-link">
+            <img src="https://i.pravatar.cc/40" alt="Usuario"/>
+            <span>{firstName}</span>
+          </Link>
 
           <button
             className="logout-btn"

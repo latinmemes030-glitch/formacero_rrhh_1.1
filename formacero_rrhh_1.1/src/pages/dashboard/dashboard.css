@@ -348,6 +348,27 @@
   font-size: 14px;
 }
 
+/* Estilos para el enlace del usuario */
+.user-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.user-link:hover {
+  opacity: 0.8;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* ==================================================
    RESPONSIVE
 ================================================== */
