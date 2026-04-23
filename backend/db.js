@@ -38,6 +38,13 @@ export const db = {
           data = res.data;
           error = res.error;
         }
+
+        else if (sql.includes("FROM reportes")) {
+          const res = await supabase.from("reportes").select("*");
+          console.log("Supabase select reportes res:", res);
+          data = res.data || [];
+          error = res.error;
+        }
       }
 
       // 🔥 INSERT empleados
@@ -84,14 +91,6 @@ export const db = {
         error = res.error;
       }
 
-      // 🔥 SELECT reportes
-      else if (sql.includes("FROM reportes")) {
-        const res = await supabase.from("reportes").select("*");
-        console.log("Supabase select reportes res:", res);
-        data = res.data || [];
-        error = res.error;
-      }
-
       // 🔥 INSERT usuarios
       else if (sql.includes("INSERT INTO usuarios")) {
         const [nombre, correo, password, rol, empleado_id, username] = params;
@@ -129,7 +128,8 @@ export const db = {
         const res = await supabase
           .from("reportes")
           .delete()
-          .eq("id", id);
+          .eq("id", Number(id))
+          .select();
 
         data = res.data;
         error = res.error;

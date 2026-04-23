@@ -5,13 +5,14 @@ import "./reportes.css";
 
 function Reportes() {
 
-  const [reportes,setReportes] = useState([]);
+  const [reportes, setReportes] = useState([]);
   const [empleados, setEmpleados] = useState([]);
   const [formData, setFormData] = useState({ empleado_id: '', descripcion: '', fecha: '' });
   const [activeTab, setActiveTab] = useState("formulario");
   const [editingReport, setEditingReport] = useState(null);
   const [editDecision, setEditDecision] = useState("");
   const [editEstado, setEditEstado] = useState("pendiente");
+  const [loading, setLoading] = useState(false);
 
   // 🔐 OBTENER REPORTES DESDE BACKEND
   useEffect(() => {
@@ -20,6 +21,7 @@ function Reportes() {
   }, []);
 
   async function fetchReportes() {
+    setLoading(true);
     try {
       const res = await fetchWithAuth("/reportes");
       const data = await res.json();
@@ -48,6 +50,8 @@ function Reportes() {
     } catch (error) {
       console.error("Error cargando reportes:", error);
       setReportes([]);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -177,7 +181,10 @@ function Reportes() {
         <button
           type="button"
           className={`tab-btn ${activeTab === "reportes" ? "active" : ""}`}
-          onClick={() => setActiveTab("reportes")}
+          onClick={() => {
+            setActiveTab("reportes");
+            fetchReportes();
+          }}
         >
           Reportes Generados
         </button>
@@ -217,30 +224,36 @@ function Reportes() {
 
       {activeTab === "reportes" && (
         <div className="contenedor-reportes">
-          <div className="grid-reportes">
-            {reportes.map((rep)=> (
-              <div key={rep.id} className="tarjeta">
-                <h3>{rep.empleado}</h3>
-                <div className="fecha">{rep.fecha}</div>
-                <div className="descripcion">{rep.descripcion}</div>
-                <div className="decision"><strong>Decisión:</strong> {rep.decision || "Sin decisión"}</div>
-                <div className="acciones-reporte">
-                  <button
-                    className={rep.estado === "resuelto" ? "btn-resuelto" : "btn-pendiente"}
-                    onClick={()=>cambiarEstado(rep.id)}
-                  >
-                    {rep.estado === "resuelto" ? "Resuelto" : "Marcar Resuelto"}
-                  </button>
-                  <button className="btn-editar" onClick={() => startEdit(rep)}>
-                    Editar
-                  </button>
-                  <button className="btn-eliminar" onClick={() => deleteReporte(rep.id)}>
-                    Eliminar
-                  </button>
+          {loading ? (
+            <p className="loading-message">Cargando reportes...</p>
+          ) : reportes.length === 0 ? (
+            <p className="empty-message">No hay reportes generados aún.</p>
+          ) : (
+            <div className="grid-reportes">
+              {reportes.map((rep)=> (
+                <div key={rep.id} className="tarjeta">
+                  <h3>{rep.empleado}</h3>
+                  <div className="fecha">{rep.fecha}</div>
+                  <div className="descripcion">{rep.descripcion}</div>
+                  <div className="decision"><strong>Decisión:</strong> {rep.decision || "Sin decisión"}</div>
+                  <div className="acciones-reporte">
+                    <button
+                      className={rep.estado === "resuelto" ? "btn-resuelto" : "btn-pendiente"}
+                      onClick={()=>cambiarEstado(rep.id)}
+                    >
+                      {rep.estado === "resuelto" ? "Resuelto" : "Marcar Resuelto"}
+                    </button>
+                    <button className="btn-editar" onClick={() => startEdit(rep)}>
+                      Editar
+                    </button>
+                    <button className="btn-eliminar" onClick={() => deleteReporte(rep.id)}>
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

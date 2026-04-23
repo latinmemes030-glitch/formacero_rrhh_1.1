@@ -28,6 +28,11 @@ export const getReportes = (req, res) => {
 export const updateReporte = (req, res) => {
   const { id } = req.params;
   const { estado, decision } = req.body;
+  const reporteId = Number(id);
+
+  if (Number.isNaN(reporteId)) {
+    return res.status(400).json({ message: "ID de reporte inválido" });
+  }
 
   const sql = `
     UPDATE reportes
@@ -35,7 +40,7 @@ export const updateReporte = (req, res) => {
     WHERE id = ?
   `;
 
-  db.query(sql, [estado, decision, id], (err) => {
+  db.query(sql, [estado, decision, reporteId], (err) => {
     if (err) return res.status(500).json(err);
     res.json("Reporte actualizado");
   });
@@ -43,11 +48,19 @@ export const updateReporte = (req, res) => {
 
 export const deleteReporte = (req, res) => {
   const { id } = req.params;
+  const reporteId = Number(id);
+
+  if (Number.isNaN(reporteId)) {
+    return res.status(400).json({ message: "ID de reporte inválido" });
+  }
 
   const sql = "DELETE FROM reportes WHERE id = ?";
 
-  db.query(sql, [id], (err) => {
+  db.query(sql, [reporteId], (err, data) => {
     if (err) return res.status(500).json(err);
+    if (!data || (Array.isArray(data) && data.length === 0)) {
+      return res.status(404).json({ message: "Reporte no encontrado" });
+    }
     res.json("Reporte eliminado");
   });
 };
