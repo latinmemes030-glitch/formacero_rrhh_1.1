@@ -37,6 +37,8 @@ CREATE TABLE reportes (
   empleado_id INT,
   descripcion TEXT,
   fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  estado VARCHAR(20) DEFAULT 'pendiente',
+  decision TEXT,
   FOREIGN KEY (empleado_id) REFERENCES empleados(id)
 );
 

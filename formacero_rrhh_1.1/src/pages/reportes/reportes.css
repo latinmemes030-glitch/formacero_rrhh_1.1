@@ -101,3 +101,185 @@ h2 {
     border-radius: 20px;
     font-size: 13px;
 }
+
+.acciones-reporte {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.acciones-reporte button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-editar {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-editar:hover {
+    background: #1d4ed8;
+}
+
+.btn-eliminar {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-eliminar:hover {
+    background: #b91c1c;
+}
+
+.edit-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 2000;
+}
+
+.edit-content {
+    width: min(580px, 100%);
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+}
+
+.edit-content h3 {
+    margin-top: 0;
+    margin-bottom: 18px;
+    color: #2e4a92;
+}
+
+.edit-content textarea,
+.edit-content select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.edit-actions button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.edit-actions button:first-child {
+    background: #16a34a;
+    color: white;
+}
+
+.btn-cancel {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: #4b5563;
+}
+
+/* =========================
+   FORMULARIO CREAR REPORTE
+========================= */
+
+.crear-reporte {
+    max-width: 600px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.crear-reporte h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2E4A92;
+}
+
+.tab-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 30px auto;
+    max-width: 600px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 20px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    color: #1e293b;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    background: #e2e8f0;
+}
+
+.tab-btn.active {
+    background: #2E4A92;
+    color: white;
+    border-color: #2E4A92;
+}
+
+
+.crear-reporte form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.crear-reporte select,
+.crear-reporte textarea,
+.crear-reporte input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.crear-reporte textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.crear-reporte button {
+    background-color: #2E4A92;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.crear-reporte button:hover {
+    background-color: #1e3a6e;
+}

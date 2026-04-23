@@ -348,6 +348,181 @@
   font-size: 14px;
 }
 
+/* ==================================================
+   SECCIÓN REPORTES (solo admins)
+================================================== */
+
+.reportes-admin-section {
+  width: 100%;
+  padding: 40px;
+  background-color: #f9f9f9;
+}
+
+.reportes-admin-section h2 {
+  text-align: center;
+  color: #2E4A92;
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+.reportes-form, .reportes-list {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+}
+
+.reportes-form h3, .reportes-list h3 {
+  color: #444;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.reportes-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.reportes-form select, .reportes-form textarea, .reportes-form input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.reportes-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.reportes-form button {
+  background-color: #2E4A92;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.reportes-form button:hover {
+  background-color: #1e3a6e;
+}
+
+.reporte-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background: #fafafa;
+}
+
+.reporte-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.reporte-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.reporte-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.reporte-actions button:first-child {
+  background-color: #f4b400;
+  color: white;
+}
+
+.reporte-actions button:first-child:hover {
+  background-color: #d89e00;
+}
+
+.reporte-actions button:last-child {
+  background-color: #dc3545;
+  color: white;
+}
+
+.reporte-actions button:last-child:hover {
+  background-color: #c82333;
+}
+
+/* Modal de edición */
+.edit-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+.edit-content {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.edit-content h3 {
+  margin-bottom: 20px;
+  color: #2E4A92;
+}
+
+.edit-content select, .edit-content textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.edit-content textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.edit-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.edit-actions button:first-child {
+  background-color: #28a745;
+  color: white;
+}
+
+.edit-actions button:last-child {
+  background-color: #6c757d;
+  color: white;
+}
+
 /* Estilos para el enlace del usuario */
 .user-link {
   display: flex;

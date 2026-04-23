@@ -69,6 +69,29 @@ export const db = {
         error = res.error;
       }
 
+      // 🔥 INSERT reportes
+      else if (sql.includes("INSERT INTO reportes")) {
+        const [empleado_id, descripcion, fecha] = params;
+
+        const payload = {
+          empleado_id,
+          descripcion,
+          fecha: fecha ? new Date(fecha) : new Date()
+        };
+
+        const res = await supabase.from("reportes").insert([payload]).select();
+        data = { insertId: res.data?.[0]?.id };
+        error = res.error;
+      }
+
+      // 🔥 SELECT reportes
+      else if (sql.includes("FROM reportes")) {
+        const res = await supabase.from("reportes").select("*");
+        console.log("Supabase select reportes res:", res);
+        data = res.data || [];
+        error = res.error;
+      }
+
       // 🔥 INSERT usuarios
       else if (sql.includes("INSERT INTO usuarios")) {
         const [nombre, correo, password, rol, empleado_id, username] = params;
@@ -81,6 +104,32 @@ export const db = {
           empleado_id,
           username
         }]);
+
+        data = res.data;
+        error = res.error;
+      }
+
+      // 🔥 UPDATE reportes
+      else if (sql.includes("UPDATE reportes")) {
+        const [estado, decision, id] = params;
+
+        const res = await supabase
+          .from("reportes")
+          .update({ estado, decision })
+          .eq("id", id);
+
+        data = res.data;
+        error = res.error;
+      }
+
+      // 🔥 DELETE reportes
+      else if (sql.includes("DELETE FROM reportes")) {
+        const [id] = params;
+
+        const res = await supabase
+          .from("reportes")
+          .delete()
+          .eq("id", id);
 
         data = res.data;
         error = res.error;

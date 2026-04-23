@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"; 
 import { Link, useNavigate } from "react-router-dom";
-import { API } from "../../utils/api";
+import { API, fetchWithAuth } from "../../utils/api";
 import "../../layout.css";
 import "./dashboard.css";
 
@@ -13,6 +13,13 @@ function Dashboard() {
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  // Reportes states (solo para admins)
+  const [reportes, setReportes] = useState([]);
+  const [empleados, setEmpleados] = useState([]);
+  const [formData, setFormData] = useState({ empleado_id: '', descripcion: '', fecha: '' });
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({ estado: '', decision: '' });
 
   // ✅ TOKEN
   const token = localStorage.getItem("token");
@@ -71,7 +78,79 @@ function Dashboard() {
     }
   };
 
-  // 📊 DATA
+  // � FUNCIONES REPORTES (solo admins)
+  const fetchReportes = async () => {
+    try {
+      const res = await fetchWithAuth("/reportes");
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) setReportes(data); else setReportes([]);
+    } catch (error) {
+      console.error("Error fetching reportes:", error);
+      setReportes([]);
+    }
+  };
+
+  const fetchEmpleados = async () => {
+    try {
+      const res = await fetchWithAuth("/empleados");
+      const data = await res.json();
+      if (res.ok && Array.isArray(data)) setEmpleados(data); else setEmpleados([]);
+    } catch (error) {
+      console.error("Error fetching empleados:", error);
+      setEmpleados([]);
+    }
+  };
+
+  const handleCreateReporte = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetchWithAuth("/reportes", {
+        method: "POST",
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        setFormData({ empleado_id: '', descripcion: '', fecha: '' });
+        fetchReportes();
+      }
+    } catch (error) {
+      console.error("Error creando reporte:", error);
+    }
+  };
+
+  const handleEditReporte = (reporte) => {
+    setEditingId(reporte.id);
+    setEditData({ estado: reporte.estado, decision: reporte.decision || '' });
+  };
+
+  const handleUpdateReporte = async () => {
+    try {
+      const res = await fetchWithAuth(`/reportes/${editingId}`, {
+        method: "PUT",
+        body: JSON.stringify(editData)
+      });
+      if (res.ok) {
+        setEditingId(null);
+        setEditData({ estado: '', decision: '' });
+        fetchReportes();
+      }
+    } catch (error) {
+      console.error("Error actualizando reporte:", error);
+    }
+  };
+
+  const handleDeleteReporte = async (id) => {
+    if (!confirm("¿Eliminar este reporte?")) return;
+    try {
+      const res = await fetchWithAuth(`/reportes/${id}`, {
+        method: "DELETE"
+      });
+      if (res.ok) fetchReportes();
+    } catch (error) {
+      console.error("Error eliminando reporte:", error);
+    }
+  };
+
+  // �📊 DATA
   useEffect(() => {
 
     if (!token) {
@@ -127,6 +206,11 @@ function Dashboard() {
 
     getTotal();
     getCumpleaneros();
+
+    if (user?.rol === "admin") {
+      fetchEmpleados();
+      fetchReportes();
+    }
 
   }, [token, navigate]);
 
@@ -215,7 +299,7 @@ function Dashboard() {
         <Link to="/registrar-empleados" className="menu-btn">Registro de Empleados</Link>
         <Link to="/certificado-laboral" className="menu-btn">Certificado Laboral</Link>
         <Link to="/vacaciones" className="menu-btn">Vacaciones</Link>
-        <Link to="/reportes" className="menu-btn">Reportes</Link>
+        {user?.rol === "admin" && <Link to="/reportes" className="menu-btn">Reportes</Link>}
       </nav>
 
       {/* CONTENIDO */}
@@ -265,6 +349,92 @@ function Dashboard() {
         </div>
 
       </main>
+
+      {/* SECCIÓN REPORTES (solo admins) */}
+      {user?.rol === "admin" && (
+        <section className="reportes-admin-section">
+          <h2>Gestión de Reportes</h2>
+          
+          {/* Formulario para crear reporte */}
+          <div className="reportes-form">
+            <h3>Crear Nuevo Reporte</h3>
+            <form onSubmit={handleCreateReporte}>
+              <select
+                value={formData.empleado_id}
+                onChange={(e) => setFormData({...formData, empleado_id: e.target.value})}
+                required
+              >
+                <option value="">Seleccionar Empleado</option>
+                {empleados.map(emp => (
+                  <option key={emp.id} value={emp.id}>{emp.nombre}</option>
+                ))}
+              </select>
+              <textarea
+                placeholder="Descripción del reporte"
+                value={formData.descripcion}
+                onChange={(e) => setFormData({...formData, descripcion: e.target.value})}
+                required
+              />
+              <input
+                type="date"
+                value={formData.fecha}
+                onChange={(e) => setFormData({...formData, fecha: e.target.value})}
+                required
+              />
+              <button type="submit">Crear Reporte</button>
+            </form>
+          </div>
+
+          {/* Lista de reportes */}
+          <div className="reportes-list">
+            <h3>Reportes Existentes</h3>
+            {reportes.length === 0 ? (
+              <p>No hay reportes</p>
+            ) : (
+              reportes.map(reporte => (
+                <div key={reporte.id} className="reporte-item">
+                  <div className="reporte-info">
+                    <p><strong>Empleado:</strong> {reporte.empleado}</p>
+                    <p><strong>Fecha:</strong> {new Date(reporte.fecha).toLocaleDateString()}</p>
+                    <p><strong>Descripción:</strong> {reporte.descripcion}</p>
+                    <p><strong>Estado:</strong> {reporte.estado}</p>
+                    {reporte.decision && <p><strong>Decisión:</strong> {reporte.decision}</p>}
+                  </div>
+                  <div className="reporte-actions">
+                    <button onClick={() => handleEditReporte(reporte)}>Editar</button>
+                    <button onClick={() => handleDeleteReporte(reporte.id)}>Eliminar</button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Modal de edición */}
+          {editingId && (
+            <div className="edit-modal">
+              <div className="edit-content">
+                <h3>Editar Reporte</h3>
+                <select
+                  value={editData.estado}
+                  onChange={(e) => setEditData({...editData, estado: e.target.value})}
+                >
+                  <option value="pendiente">Pendiente</option>
+                  <option value="resuelto">Resuelto</option>
+                </select>
+                <textarea
+                  placeholder="Decisión"
+                  value={editData.decision}
+                  onChange={(e) => setEditData({...editData, decision: e.target.value})}
+                />
+                <div className="edit-actions">
+                  <button onClick={handleUpdateReporte}>Guardar</button>
+                  <button onClick={() => setEditingId(null)}>Cancelar</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* FOOTER */}
       <footer className="footer">
