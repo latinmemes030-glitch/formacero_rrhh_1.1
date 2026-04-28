@@ -78,81 +78,7 @@ function Dashboard() {
     }
   };
 
-  // � FUNCIONES REPORTES (solo admins)
-  const fetchReportes = async () => {
-    try {
-      const res = await fetchWithAuth("/reportes");
-      const data = await res.json();
-      if (res.ok && Array.isArray(data)) setReportes(data); else setReportes([]);
-    } catch (error) {
-      console.error("Error fetching reportes:", error);
-      setReportes([]);
-    }
-  };
-
-  const fetchEmpleados = async () => {
-    try {
-      const res = await fetchWithAuth("/empleados");
-      const data = await res.json();
-      if (res.ok && Array.isArray(data)) setEmpleados(data); else setEmpleados([]);
-    } catch (error) {
-      console.error("Error fetching empleados:", error);
-      setEmpleados([]);
-    }
-  };
-
-  const pendingDecisionCount = reportes.filter(reporte => reporte.estado === "pendiente").length;
-
-  const handleCreateReporte = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetchWithAuth("/reportes", {
-        method: "POST",
-        body: JSON.stringify(formData)
-      });
-      if (res.ok) {
-        setFormData({ empleado_id: '', descripcion: '', fecha: '' });
-        fetchReportes();
-      }
-    } catch (error) {
-      console.error("Error creando reporte:", error);
-    }
-  };
-
-  const handleEditReporte = (reporte) => {
-    setEditingId(reporte.id);
-    setEditData({ estado: reporte.estado, decision: reporte.decision || '' });
-  };
-
-  const handleUpdateReporte = async () => {
-    try {
-      const res = await fetchWithAuth(`/reportes/${editingId}`, {
-        method: "PUT",
-        body: JSON.stringify(editData)
-      });
-      if (res.ok) {
-        setEditingId(null);
-        setEditData({ estado: '', decision: '' });
-        fetchReportes();
-      }
-    } catch (error) {
-      console.error("Error actualizando reporte:", error);
-    }
-  };
-
-  const handleDeleteReporte = async (id) => {
-    if (!confirm("¿Eliminar este reporte?")) return;
-    try {
-      const res = await fetchWithAuth(`/reportes/${id}`, {
-        method: "DELETE"
-      });
-      if (res.ok) fetchReportes();
-    } catch (error) {
-      console.error("Error eliminando reporte:", error);
-    }
-  };
-
-  // �📊 DATA
+  // 📊 DATA
   useEffect(() => {
 
     if (!token) {
@@ -208,11 +134,6 @@ function Dashboard() {
 
     getTotal();
     getCumpleaneros();
-
-    fetchReportes();
-    if (user?.rol === "admin") {
-      fetchEmpleados();
-    }
 
   }, [token, navigate]);
 
@@ -354,8 +275,6 @@ function Dashboard() {
         </Link>
 
       </main>
-
-
 
       {/* FOOTER */}
       <footer className="footer">

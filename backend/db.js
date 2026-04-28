@@ -108,55 +108,6 @@ export const db = {
         error = res.error;
       }
 
-      // 🔥 UPDATE reportes
-      else if (sql.includes("UPDATE reportes")) {
-        if (sql.includes("SET respuesta_empleado = ?") && sql.includes("archivo_excusa = ?")) {
-          const [respuesta_empleado, archivo_excusa, id] = params;
-
-          const res = await supabase
-            .from("reportes")
-            .update({ respuesta_empleado, archivo_excusa, fecha_respuesta: new Date() })
-            .eq("id", id);
-
-          data = res.data;
-          error = res.error;
-        } else if (sql.includes("SET estado = ?") && sql.includes("decision = ?") && sql.includes("respuesta_empleado = ?")) {
-          const [estado, decision, respuesta_empleado, id] = params;
-
-          const res = await supabase
-            .from("reportes")
-            .update({ estado, decision, respuesta_empleado })
-            .eq("id", id);
-
-          data = res.data;
-          error = res.error;
-        } else {
-          const [estado, decision, id] = params;
-
-          const res = await supabase
-            .from("reportes")
-            .update({ estado, decision })
-            .eq("id", id);
-
-          data = res.data;
-          error = res.error;
-        }
-      }
-
-      // 🔥 DELETE reportes
-      else if (sql.includes("DELETE FROM reportes")) {
-        const [id] = params;
-
-        const res = await supabase
-          .from("reportes")
-          .delete()
-          .eq("id", Number(id))
-          .select();
-
-        data = res.data;
-        error = res.error;
-      }
-
       // 🔥 UPDATE empleados
       else if (sql.includes("UPDATE empleados")) {
         const [nombre, cargo, departamento, id] = params;
